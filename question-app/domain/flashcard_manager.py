@@ -1,5 +1,9 @@
+from typing import List
+
+from sqlalchemy import String
 
 class Flashcard:
+    __tablename__ = "flashcards"
     def __init__(self, question, answer):
         self.question = question
         self.answer = answer
@@ -11,11 +15,13 @@ class Deck:
     def __init__(self, name, summary="", flashcards=[]):
         self.name = name
         self.summary:str = summary
-        self.flashcards:list = flashcards
+        self.flashcards:List[Flashcard] = flashcards
     def add_flashcard(self, flashcard:Flashcard):
         self.flashcards.append(flashcard)
     def get_flashcards(self):
         return self.flashcards
+    def get_previous_questions(self):
+        return [flashcard.question for flashcard in self.flashcards]
     
 class FlashcardManager:
     def __init__(self):

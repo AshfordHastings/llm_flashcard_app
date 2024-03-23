@@ -6,6 +6,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.language_models import BaseChatModel
 from langchain_openai import ChatOpenAI
+
+from domain.flashcard_manager import Flashcard, Deck
  
 
 format_instructions_question_json_1 = """
@@ -80,6 +82,31 @@ class LLMInterface:
         A list of generated questions.
         """
         prompt = self._build_prompt(deck_summary, specifications, previous_questions, num_questions)
+
+        parser = JsonOutputParser()
+        chain = (
+            prompt |
+            self.model |
+            parser
+        )  
+        response = chain.invoke({"question_count": str(num_questions)})
+        return response
+    
+    def generate_questions_for_deck(self, deck:Deck, specifications:str="", num_questions:int=1):
+        """
+        Generates a set of questions for a given deck.
+
+        Parameters:
+        - deck: The deck to generate
+        - specifications: Additional specifications for question generation.
+        - num_questions: The number of questions to generate.
+
+        Returns:
+        A list of generated questions.
+        """
+
+
+        prompt = self._build_prompt(deck.summary, specifications, deck.get_previous_questions(), num_questions)
 
         parser = JsonOutputParser()
         chain = (
