@@ -25,6 +25,22 @@
 ## Future additions
 - Within a deck, questions can be assigned "tags". 
 
+## Routes
+- GET decks
+- POST decks
+- GET decks/id
+- DELETE decks/id
+
+- POST decks/id/flashcards
+- GET decks/id/flashcards
+- PUT /decks/id/flashcards/id - update a flashcard
+
+- POST decks/id/generate
+
+- POST /decks/id/save
+
+
+
 ## Components:
 ### Question Answerer
 - Usea section of a PDF to 
