@@ -41,7 +41,7 @@ Please directly output the JSON object, with no additional text, markdown, or fo
 """
 
 template_v1 = """
-Based on the following flashcard deck summary and specifications, generate, generate {question_count} practice questions. Do not repeat the existing questions in the deck. 
+Based on the following flashcard deck summary and specifications, generate, generate {question_count} practice questions. Do not repeat the existing questions in the deck. Avoid redundancy not only in wording but in the conceptual content of the questions.
 
 Deck Summary:
 {deck_summary}
