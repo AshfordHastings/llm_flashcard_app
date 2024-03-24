@@ -1,0 +1,18 @@
+version: '3'
+services:
+  metadata:
+    build: MetadataService
+    ports:
+      - 8000:8000
+  db: 
+    image: 'postgres'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: flashcard_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  pgdata:

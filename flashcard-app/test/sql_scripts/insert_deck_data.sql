@@ -1,0 +1,1 @@
+INSERT INTO decks (name, summary) VALUES ('Deck 1', 'Flashcards to Learn About Kubernetes');
