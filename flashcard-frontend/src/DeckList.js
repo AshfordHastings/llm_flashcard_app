@@ -7,8 +7,8 @@ const DeckList = () => {
 
   useEffect(() => {
     // Fetch all decks
-    axios.get('/api/decks')
-      .then(response => setDecks(response.data))
+    axios.get('/api/decks/')
+      .then(response => setDecks(response.data.value))
       .catch(error => console.error("There was an error fetching the decks:", error));
   }, []);
 

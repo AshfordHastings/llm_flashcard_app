@@ -1,4 +1,5 @@
 from flask import Flask, g
+from flask_cors import CORS
 from api.routes import health_bp, deck_bp, flashcard_bp
 from api.middleware import init_db_session, init_error_handlers
 from cfg import TestingConfig, DevelopmentConfig
@@ -18,7 +19,8 @@ def create_app(config_name='testing'):
     app.register_blueprint(deck_bp, url_prefix='/api/decks')
     #app.register_blueprint(flashcard_bp, url_prefix='/api/decks/<int:deck_id>/flashcards')
     app.register_blueprint(flashcard_bp)
-
     app.register_blueprint(health_bp, url_prefix='/api/health')
+
+    CORS(app)
     
     return app

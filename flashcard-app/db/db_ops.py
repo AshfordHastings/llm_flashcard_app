@@ -30,7 +30,7 @@ def delete_deck_resource(session:Session, deck_id:int):
 
 ### FLASHCARDS ###
 def query_flashcard_list_by_deck_id(session:Session, deck_id:int) -> List[FlashcardModel]: 
-    resp_flashcard_list = session.query(FlashcardModel).filter_by(deckId=deck_id).all()
+    resp_flashcard_list = session.query(FlashcardModel).filter_by(deck_id=deck_id).all()
 
     return resp_flashcard_list
 

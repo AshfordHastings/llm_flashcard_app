@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';;
 
-axios.defaults.baseURL = 'http://localhost.com:5001/';
+axios.defaults.baseURL = 'http://localhost:5001/';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

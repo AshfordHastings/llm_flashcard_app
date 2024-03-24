@@ -35,7 +35,7 @@ def create_flashcards(deck_id: int):
     data = request.json
 
     for flashcard in data:
-        flashcard['deckId'] = deck_id
+        flashcard['deck_id'] = deck_id
 
     try:
         obj_flashcard_list = schema.load(data)

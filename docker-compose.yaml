@@ -1,18 +1,16 @@
 version: '3'
 services:
-  metadata:
-    build: MetadataService
-    ports:
-      - 8000:8000
-  db: 
+  fc_db: 
     image: 'postgres'
+    container_name: fc_db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: flashcard_db
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      #- pgdata:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
-volumes:
-  pgdata:
+# volumes:
+#   pgdata:

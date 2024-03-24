@@ -14,7 +14,7 @@ class FlashcardModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     question: Mapped[str]
     answer: Mapped[str]
-    deckId: Mapped[int] = mapped_column(ForeignKey("decks.id"), nullable=False)
+    deck_id: Mapped[int] = mapped_column(ForeignKey("decks.id"), nullable=False)
 
     deck: Mapped['DeckModel'] = relationship(back_populates="flashcards")
 
