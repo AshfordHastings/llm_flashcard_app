@@ -29,6 +29,7 @@ def test_get_deck_resource(client):
     assert "summary" in value.keys()
     #assert "flashcards" in value.keys()
 
+@pytest.mark.usefixtures('populate_deck_data', 'populate_flashcard_data')
 def test_create_deck_resource(client):
     
     payload = {
@@ -46,4 +47,18 @@ def test_create_deck_resource(client):
     assert "id" in value.keys() 
     assert "name" in value.keys()
     assert "summary" in value.keys()
+
+    deck_id = value.get("id")
+    resp = client.get(f"/api/decks/{deck_id}", headers={})
+
+    message, value, error = resp.json.get('message', None), resp.json.get('value', None), resp.json.get('error', None)
+
+    assert resp.status_code == 200
+    assert message == 'OK'
+    assert error == None
+
+    assert "id" in value.keys()
+    assert "name" in value.keys()
+    assert "summary" in value.keys()
+
 

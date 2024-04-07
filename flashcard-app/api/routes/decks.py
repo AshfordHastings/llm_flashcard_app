@@ -43,6 +43,8 @@ def create_deck_resource():
         data = request.json
         obj_deck_resource = schema.load(data)
         obj_deck_resource_persisted = db_ops.insert_deck_resource(session, obj_deck_resource)
+        session.commit() # Commit after successful insert 
+
         dict_deck_resource_persisted = schema.dump(obj_deck_resource_persisted)
     except Exception as e:
         print(e)
@@ -57,6 +59,7 @@ def remove_deck_resource(deck_id):
 
     try:
         db_ops.delete_deck_resource(session, deck_id)
+        session.commit() # Commit after successful remove
     except Exception as e:
         print(e)
         pass

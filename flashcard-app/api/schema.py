@@ -7,7 +7,7 @@ class FlashcardSchema(Schema):
     question = fields.String(required=True)
     answer = fields.String(required=True)
 
-    deckId = fields.Integer()
+    deck_id = fields.Integer()
 
     @post_load
     def make_flashcard(self, data, **kwargs):

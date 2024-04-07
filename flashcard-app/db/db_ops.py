@@ -38,3 +38,20 @@ def insert_flashcard_batch(session:Session, data:List[FlashcardModel]) -> List[F
     session.add_all(data)
     session.flush()
     return data
+
+def update_flashcard(session:Session, flashcard_id:int, flashcard_data:dict ) -> FlashcardModel:
+    existing_flashcard = session.query(FlashcardModel).filter_by(id=flashcard_id).first()
+    if not existing_flashcard:
+        raise ResourceNotFound(f"Flashcard resource with id of {flashcard_id} is not found.")
+    for key, value in flashcard_data.items():
+        setattr(existing_flashcard, key, value)
+    
+    session.flush()
+    return existing_flashcard
+
+def delete_flashcard(session:Session, flashcard_id:int):
+    existing_flashcard = session.query(FlashcardModel).filter_by(id=flashcard_id).first()
+    if not existing_flashcard:
+        raise ResourceNotFound(f"Flashcard resource with id of {flashcard_id} is not found.")
+    session.delete(existing_flashcard)
+    session.flush()
