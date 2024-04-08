@@ -158,10 +158,10 @@ const Flashcard = ({ flashcard, deck, onSaveEditedFlashcard, onDeleteFlashcard, 
         <div>
             {
                 flashcard.isDraft ? (
-                    <FlashcardEditor flashcard={flashcard} deck={deck} onToggleEdit={onToggleEdit} onSaveEditedFlashcard={onSaveNewFlashcard} onDeleteFlashcard={onCancelNewFlashcard} onCancelFlashcard={onCancelNewFlashcard}/>
+                    <FlashcardEditor flashcard={flashcard} deck={deck} onToggleEdit={onToggleEdit} onSaveEditedFlashcard={onSaveNewFlashcard} onDeleteFlashcard={onCancelNewFlashcard} onCancelFlashcard={onCancelNewFlashcard} />
                 ) :
                 flashcard.isEditing ? (
-                    <FlashcardEditor flashcard={flashcard} deck={deck} onToggleEdit={onToggleEdit} onSaveEditedFlashcard={onSaveEditedFlashcard} onDeleteFlashcard={onDeleteFlashcard} onCancelFlashcard={(flashcard) => onToggleEdit(flashcard)}/>
+                    <FlashcardEditor flashcard={flashcard} deck={deck} onToggleEdit={onToggleEdit} onSaveEditedFlashcard={onSaveEditedFlashcard} onDeleteFlashcard={onDeleteFlashcard} onCancelFlashcard={(flashcard) => onToggleEdit(flashcard)} />
                 ) : (
                     <FlashcardReader flashcard={flashcard} onToggleEdit={onToggleEdit} onDeleteFlashcard={onDeleteFlashcard}/>
                 )}
@@ -212,6 +212,19 @@ const FlashcardEditor = ({ flashcard, deck, onToggleEdit, onSaveEditedFlashcard,
         onCancelFlashcard(flashcard)
     }
 
+    
+    const handleGenerateAnswer = () => {
+        axios.post(
+            `/api/llm/generate-answer`,
+            {
+                question: question
+            }
+        ).then(response => {
+            setAnswer(response.data.value.answer)
+            
+        }).catch(error => console.error("There was an error generating the answer: ", error));
+    }
+
     return (
         <div className='flashcard'>
             <div className='question'>
@@ -239,6 +252,7 @@ const FlashcardEditor = ({ flashcard, deck, onToggleEdit, onSaveEditedFlashcard,
             <div className='action-buttons'>
                 <button className='save-btn' onClick={handleSave}>Save</button>
                 <button className='cancel-btn' onClick={handleCancel}>Cancel</button>
+                <button className='generate-btn' onClick={handleGenerateAnswer}>Generate</button>
             </div>
         </div>
     )

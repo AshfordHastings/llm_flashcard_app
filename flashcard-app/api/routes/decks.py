@@ -10,7 +10,7 @@ from api.responses import (
     ERROR_500
 )
 from db import db_ops
-from llm_interface import LLMInterface
+from llm.llm_interface import LLMInterface
 
 deck_bp = Blueprint("deck_bp", __name__) 
 

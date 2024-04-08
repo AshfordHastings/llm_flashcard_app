@@ -28,6 +28,24 @@
 - Create new flashcard
     - Brings up the same component as the edit component, but with a cancel button 
 
+## LLM Component - 4/7
+- Substage is allowing the LLM to generate the answers to the questions - not the question itself. This would be easier potentially.
+
+- Generate Panel to the right hand side with sample questions. 
+    - Button towards top right that says "Generate questions". 
+    - On click, a side panel appears with a text box for querying, and configurations, big one would be number of questions.
+    - Button called "add all". Another button "add all with answers". Button called "regenerate".
+    - Each question box will have action buttons "add" "delete", "edit", letting one edit the question in the pane if they want to add all. Maybe checkboxes to let you add all of the ones you want to add.
+
+
+
+
+
+
+
+
+
+
 ## Flow
 - User open up main page and chat window. User uploads a certain PDF, and this PDF is persisted. 
 - User clicks on PDF. The user is given several configurability options such as number of questions, temperature. The user is also given the option to add extra instructions for the LLM when making the question. 

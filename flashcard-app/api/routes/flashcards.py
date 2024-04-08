@@ -86,6 +86,18 @@ def delete_flashcard(deck_id:int, flashcard_id:int):
     return response_with(SUCCESS_204)
 
 
+# @flashcard_bp.route("/<flashcard_id>/generate-answer", methods=["POST"])
+# def generate_answer(deck_id:int, flashcard_id:int):
+#     session = g.db_session
+
+#     try:
+#         db_ops.delete_flashcard(session, flashcard_id)
+#         session.commit()
+#     except Exception as e:
+#         return response_with(ERROR_500, errors=(str(e)))
+
+#     return response_with(SUCCESS_204)
+
 
 
     
