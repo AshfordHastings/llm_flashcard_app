@@ -10,6 +10,7 @@ from api.responses import (
     ERROR_500
 )
 from llm.llm_answers import QuestionAnswerer
+from llm.llm_qa import LLMQA
 
 llm_bp = Blueprint("llm_bp", __name__, url_prefix='/api/llm')
 
@@ -25,6 +26,24 @@ def generate_answer():
     try:
         llm = QuestionAnswerer()
         response = llm.generate_answer(question, specifications)
+    except Exception as e:
+        traceback.print_exc()
+        return response_with(ERROR_500, errors=(str(e)))
+    
+    return response_with(SUCCESS_200, value=response)
+    
+@llm_bp.route("/generate-qa", methods=["POST"])
+def generate_qa():
+    data = request.json
+    instructions = data.get("instructions", "")
+    questions_count = data.get("question_count", 1)
+
+    if not instructions:
+        return response_with(BAD_REQUEST_400, errors="Instructions are required.")
+    
+    try:
+        llm = LLMQA()
+        response = llm.generate_questions(instructions, questions_count)
     except Exception as e:
         traceback.print_exc()
         return response_with(ERROR_500, errors=(str(e)))

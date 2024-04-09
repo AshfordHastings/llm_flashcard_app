@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { v4 as uuidv4 } from 'uuid';
 
 const DeckPage = ({ deck, onBack }) => {
     const [flashcards, setFlashcards] = useState([]);
+    const [sidePanelActive, setSidePanelActive] = useState(false);
 
     useEffect(() => {
         fetchFlashcards()
@@ -131,9 +133,14 @@ const DeckPage = ({ deck, onBack }) => {
         );
     }
 
+    const handleToggleSidePanel = () => {
+        setSidePanelActive(!sidePanelActive);
+    }
+
     return (
         <div className='deck-page'>
             <h1>{deck.name}</h1>
+            <div className="generate-flashcards-icon" onClick={handleToggleSidePanel}>⚙️</div>
             <div className='flashcards'>
                 {flashcards.map(flashcard => <Flashcard 
                     key={flashcard.id}
@@ -146,13 +153,99 @@ const DeckPage = ({ deck, onBack }) => {
                     onToggleEdit={handleToggleEdit}
                     />)
                 }
+                <div className='add-icon' onClick={handleAddFlashcardDraft}>+</div>
             </div>
-            <div className='add-icon' onClick={handleAddFlashcardDraft}>+</div>
+            {sidePanelActive ? <SidePanel deck={deck} onToggleSidePanel={handleToggleSidePanel} onSaveNewFlashcard={handleSaveNewFlashcard} /> : null}
         </div>
     );
             };
 
-const Flashcard = ({ flashcard, deck, onSaveEditedFlashcard, onDeleteFlashcard, onSaveNewFlashcard, onCancelNewFlashcard, onToggleEdit }) => {
+const SidePanel = ({ deck, onToggleSidePanel, onSaveNewFlashcard }) => {
+    const [generatedFlashcards, setGeneratedFlashcards] = useState([])
+    const [instructions, setInstructions] = useState("")
+    const [numQuestions, setNumQuestions] = useState(1)
+
+    const handleGenerateFlashcards = () => {
+        axios.post(
+            `/api/llm/generate-qa`,
+            {
+                instructions: instructions,
+                question_count: numQuestions
+
+            }
+        ).then(response =>  {
+            const updatedFlashcards = response.data.value.map(flashcard => ({
+                ...flashcard,
+                id: uuidv4(),
+                isEditing: false,
+                isDraft: false
+            }));
+            setGeneratedFlashcards(updatedFlashcards);
+        }
+        // ).then(data => resolve(data)
+        ).catch(error => () => {
+            console.error("There was an error generating the flashcards: ", error);
+        });
+    }
+
+    const handleSaveNewFlashcard = (newFlashcard) => {
+        onSaveNewFlashcard(newFlashcard)
+        setGeneratedFlashcards(prevFlashcards => prevFlashcards.filter(flashcard => flashcard.id !== newFlashcard.id))
+    }
+    const handleSaveEditedFlashcard = (editedFlashcard) => {
+        const updatedFlashcards = generatedFlashcards.map(flashcard => {
+            if (flashcard.id === editedFlashcard.id) {
+                return {
+                    ...flashcard,
+                    ...editedFlashcard, // Overwrites properties from original
+                    isEditing: false
+                };
+            }
+            return flashcard
+        });
+        setGeneratedFlashcards(updatedFlashcards)
+    } 
+
+    const handleDeleteFlashcard = (deletedFlashcard) => {
+        setGeneratedFlashcards((prevFlashcards) => prevFlashcards.filter(flashcard => flashcard.id !== deletedFlashcard.id))
+    } 
+
+    const handleToggleEdit = (toggleFlashcard) => {
+        setGeneratedFlashcards(prevFlashcards => 
+            prevFlashcards.map(flashcard => 
+                flashcard.id === toggleFlashcard.id ? {...flashcard, isEditing: !flashcard.isEditing } : flashcard
+            )    
+        );
+    }
+
+    return (
+        <div className="side-panel">
+            <textarea id="queryInput" placeholder="Enter your instructions." value={instructions} onChange={(e) => setInstructions(e.target.value)}></textarea>
+            <input type="number" id="numQuestions" placeholder="Number of questions" value={numQuestions} onChange={(e) => setNumQuestions(e.target.value)}></input>
+            <button className="generate-btn" onClick={handleGenerateFlashcards}>Generate</button>
+            <button className="cancel-generate-btn" onClick={onToggleSidePanel}>Cancel</button>
+            <div className="generated-flashcards">
+                {generatedFlashcards.map(flashcard => 
+                <div>
+                <Flashcard 
+                    key={flashcard.id}
+                    flashcard={flashcard}
+                    deck={deck} 
+                    onSaveEditedFlashcard={handleSaveEditedFlashcard}
+                    onDeleteFlashcard={handleDeleteFlashcard}
+                    onSaveNewFlashcard={() => null}
+                    onCancelNewFlashcard={() => null }
+                    onToggleEdit={handleToggleEdit}
+                />
+                <span className="add-icon" onClick={() => handleSaveNewFlashcard(flashcard)}>+</span>
+                </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+const Flashcard = ({ flashcard, deck, onSaveEditedFlashcard, onDeleteFlashcard, onSaveNewFlashcard, onCancelNewFlashcard, onToggleEdit,  }) => {
 
     return (
         <div>
