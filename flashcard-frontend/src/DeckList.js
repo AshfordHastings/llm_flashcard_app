@@ -142,6 +142,7 @@ const DeckReader = ({ deck, onDeckSelected, onDeckDeleted, onToggleDeckEdit }) =
 };
 
 const DeckEditor = ({ deck, onDeckSelected, onDeckDeleted, onToggleDeckEdit }) => {
+  const [deckName, setDeckName] = useState(deck?.name ?? '');
 
   // const deleteDeck = (e) => {
   //   e.stopPropagation(); // Prevents the click event from bubbling up the DOM tree to the parent element
