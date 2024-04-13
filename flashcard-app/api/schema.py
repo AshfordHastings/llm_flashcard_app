@@ -4,8 +4,8 @@ from db.model import DeckModel, FlashcardModel
 
 class FlashcardSchema(Schema): 
     id = fields.Integer(dump_only=True)
-    question = fields.String(required=True)
-    answer = fields.String(required=True)
+    question = fields.String(default="")
+    answer = fields.String(default="")
 
     deck_id = fields.Integer()
 

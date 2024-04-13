@@ -12,8 +12,8 @@ class Base(DeclarativeBase):
 class FlashcardModel(Base):
     __tablename__ = "flashcards"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    question: Mapped[str]
-    answer: Mapped[str]
+    question: Mapped[str] = mapped_column(nullable=True)
+    answer: Mapped[str] = mapped_column(nullable=True)
     deck_id: Mapped[int] = mapped_column(ForeignKey("decks.id"), nullable=False)
 
     deck: Mapped['DeckModel'] = relationship(back_populates="flashcards")

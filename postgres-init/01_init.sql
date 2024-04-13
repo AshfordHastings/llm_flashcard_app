@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS decks (
 -- Create the "flashcards" table
 CREATE TABLE IF NOT EXISTS flashcards (
     id SERIAL PRIMARY KEY,
-    question TEXT NOT NULL,
-    answer TEXT NOT NULL,
+    question TEXT,
+    answer TEXT,
     deck_id INTEGER NOT NULL,
     FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE
 );

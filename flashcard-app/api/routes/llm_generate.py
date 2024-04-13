@@ -9,41 +9,39 @@ from api.responses import (
     BAD_REQUEST_400,
     ERROR_500
 )
-from llm.llm_answers import QuestionAnswerer
-from llm.llm_qa import LLMQA
-
+from llm import LLMQuestionCreator, LLMAnswerer
 llm_bp = Blueprint("llm_bp", __name__, url_prefix='/api/llm')
 
-@llm_bp.route("/generate-answer", methods=["POST"])
+@llm_bp.route("/answers/generate", methods=["POST"])
 def generate_answer():
     data = request.json
     question = data.get("question", "")
-    specifications = data.get("specifications", "")
 
     if not question:
         return response_with(BAD_REQUEST_400, errors="Question is required.")
     
     try:
-        llm = QuestionAnswerer()
-        response = llm.generate_answer(question, specifications)
+        llm = LLMAnswerer()
+        response = llm.generate_answer(question)
     except Exception as e:
         traceback.print_exc()
         return response_with(ERROR_500, errors=(str(e)))
     
     return response_with(SUCCESS_200, value=response)
     
-@llm_bp.route("/generate-qa", methods=["POST"])
+@llm_bp.route("/questions/generate", methods=["POST"])
 def generate_qa():
     data = request.json
-    instructions = data.get("instructions", "")
-    questions_count = data.get("question_count", 1)
+    specifications = data.get("specifications", "")
+    num_questions = data.get("num_questions", 1)
+    previous_questions = data.get("previous_questions", [])
 
-    if not instructions:
-        return response_with(BAD_REQUEST_400, errors="Instructions are required.")
+    if not specifications:
+        return response_with(BAD_REQUEST_400, errors="Specifications are required.")
     
     try:
-        llm = LLMQA()
-        response = llm.generate_questions(instructions, questions_count)
+        llm = LLMQuestionCreator()
+        response = llm.generate_questions(specifications, num_questions, previous_questions=previous_questions)
     except Exception as e:
         traceback.print_exc()
         return response_with(ERROR_500, errors=(str(e)))

@@ -155,22 +155,23 @@ const DeckPage = ({ deck, onBack }) => {
                 }
                 <div className='add-icon' onClick={handleAddFlashcardDraft}>+</div>
             </div>
-            {sidePanelActive ? <SidePanel deck={deck} onToggleSidePanel={handleToggleSidePanel} onSaveNewFlashcard={handleSaveNewFlashcard} /> : null}
+            {sidePanelActive ? <SidePanel deck={deck} prevFlashcards={flashcards} onToggleSidePanel={handleToggleSidePanel} onSaveNewFlashcard={handleSaveNewFlashcard} /> : null}
         </div>
     );
             };
 
-const SidePanel = ({ deck, onToggleSidePanel, onSaveNewFlashcard }) => {
+const SidePanel = ({ deck, prevFlashcards, onToggleSidePanel, onSaveNewFlashcard }) => {
     const [generatedFlashcards, setGeneratedFlashcards] = useState([])
     const [instructions, setInstructions] = useState("")
     const [numQuestions, setNumQuestions] = useState(1)
 
     const handleGenerateFlashcards = () => {
         axios.post(
-            `/api/llm/generate-qa`,
+            `/api/llm/questions/generate`,
             {
-                instructions: instructions,
-                question_count: numQuestions
+                specifications: instructions,
+                num_questions: numQuestions,
+                previous_questions: prevFlashcards.map(flashcard => flashcard.question)
 
             }
         ).then(response =>  {
@@ -308,7 +309,7 @@ const FlashcardEditor = ({ flashcard, deck, onToggleEdit, onSaveEditedFlashcard,
     
     const handleGenerateAnswer = () => {
         axios.post(
-            `/api/llm/generate-answer`,
+            `/api/llm/answers/generate`,
             {
                 question: question
             }

@@ -10,7 +10,6 @@ from api.responses import (
     ERROR_500
 )
 from db import db_ops
-from llm.llm_interface import LLMInterface
 
 deck_bp = Blueprint("deck_bp", __name__) 
 
@@ -67,27 +66,27 @@ def remove_deck_resource(deck_id):
     return response_with(SUCCESS_204)
 
 
-@deck_bp.route('/<deck_id>/generate', methods=["POST"])
-def generate_questions(deck_id):
-    session = g.db_session
-    schema = DeckSchema()
-    llm_interface = LLMInterface()
+# @deck_bp.route('/<deck_id>/generate', methods=["POST"])
+# def generate_questions(deck_id):
+#     session = g.db_session
+#     schema = DeckSchema()
+#     llm_interface = LLMInterface()
 
-    try:
-        obj_deck_resource = db_ops.query_deck_resource(session, deck_id)
-        #dict_deck_resource = schema.dump(obj_deck_resource)
-        data = request.json
-        specifications = data.get("specifications", "")
-        num_questions = data.get("num_questions", 1)
+#     try:
+#         obj_deck_resource = db_ops.query_deck_resource(session, deck_id)
+#         #dict_deck_resource = schema.dump(obj_deck_resource)
+#         data = request.json
+#         specifications = data.get("specifications", "")
+#         num_questions = data.get("num_questions", 1)
     
-        deck = obj_deck_resource.convert_to_domain()
-        questions = llm_interface.generate_questions_for_deck(deck, specifications, num_questions)
-    except Exception as e: 
-        traceback.print_exc()
-        return response_with(ERROR_500, errors=str(e))
+#         deck = obj_deck_resource.convert_to_domain()
+#         questions = llm_interface.generate_questions_for_deck(deck, specifications, num_questions)
+#     except Exception as e: 
+#         traceback.print_exc()
+#         return response_with(ERROR_500, errors=str(e))
 
 
 
-    return response_with(SUCCESS_200, value=questions)
+#     return response_with(SUCCESS_200, value=questions)
 
 
