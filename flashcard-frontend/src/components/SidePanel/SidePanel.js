@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import './SidePanel.css'
 
 import Flashcard from '../Flashcard/Flashcard'
 import { generateQuestions } from '../../services/flashcardService'

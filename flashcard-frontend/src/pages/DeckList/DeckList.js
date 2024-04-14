@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import './DeckList.css';
 
 const DeckList = ({ onDeckSelected }) => {
   const [decks, setDecks] = useState([]);

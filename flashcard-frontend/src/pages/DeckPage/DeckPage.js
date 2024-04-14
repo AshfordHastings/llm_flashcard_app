@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import './DeckPage.css';
 
 import Flashcard from '../../components/Flashcard/Flashcard';
 import SidePanel from '../../components/SidePanel/SidePanel';
