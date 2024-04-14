@@ -88,19 +88,6 @@ const DeckList = ({ onDeckSelected }) => {
   
 );
 
-  // return (
-  //   <div className='deck-list'>
-  //     <h2>Decks</h2>
-  //     {decks.map(deck => <Deck 
-  //       key={deck.id} 
-  //       deck={deck} 
-  //       onDeckDeleted={handleDeckDeleted} 
-  //       onDeckSelected={onDeckSelected} />)}
-  //     {/* {<CreateDeck onDeckCreated={handleDeckCreated} />} */}
-  //     <div className='add-icon' onClick={handleAddDeckDraft}>+</div>
-  //   </div>
-    
-  // );
 };
 
 

@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
 import './AppStyles.css';
-import DeckList from './DeckList';
-import DeckPage from './DeckPage';
+import  DeckList from './pages/DeckList/DeckList';
+import DeckPage from './pages/DeckPage/DeckPage';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('deckList');
