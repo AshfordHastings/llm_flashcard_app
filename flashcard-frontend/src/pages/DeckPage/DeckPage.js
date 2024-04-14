@@ -39,7 +39,7 @@ const DeckPage = ({ deck, onBack }) => {
             try {
                 const updatedFlashcard = await saveEditedFlashcard(deck.id, flashcard);
                 setFlashcards(flashcards.map(f => f.id === updatedFlashcard.id ? updatedFlashcard : f));
-                handleToggleEdit(updatedFlashcard)
+                // handleToggleEdit(updatedFlashcard)
             } catch (error) {
                 console.error("Error saving flashcard:", error);
             }
