@@ -52,6 +52,27 @@ def create_deck_resource():
 
     return response_with(SUCCESS_201, dict_deck_resource_persisted)
 
+@deck_bp.route("/<deck_id>", methods=["PUT"])
+def modify_deck_resource(deck_id:int):
+    session = g.db_session
+    schema = DeckSchema()
+
+    data = request.json
+
+    # data['id'] = flashcard_id
+    # data['deck_id'] = deck_id
+
+    try:
+        updated_flashcard = db_ops.update_deck(session, deck_id, data)
+        session.commit()
+
+        dict_updated_flashcard = schema.dump(updated_flashcard)
+    except Exception as e:
+        return response_with(ERROR_500, errors=(str(e)))
+        #obj_flashcard = schema.load(data)
+    
+    return response_with(SUCCESS_201, value=dict_updated_flashcard)
+
 @deck_bp.route('/<deck_id>', methods=["DELETE"])
 def remove_deck_resource(deck_id):
     session = g.db_session

@@ -6,10 +6,10 @@
 
 ## Front End Updates
 - Fix Deck Management 
-- Refactor CSS
+- Refactor CSS X - mostly 
 - Fix Edit button displays 
 - Add Configuration For Generating Answers 
-- Refactor Front End 
+- Refactor Front End X
 - Add Flashcard Ordering 
 - Add Markdown rendering for flashcard questions
 
@@ -22,3 +22,4 @@
 - Add User creation and management 
 - Add Response Messages
 - API documentation 
+- Support number of flashcards per deck

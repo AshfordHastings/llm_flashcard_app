@@ -1,90 +1,88 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './DeckList.css';
+import Deck from '../../components/Deck/Deck';
+import { fetchDecks, saveEditedDeck, saveNewDeck, deleteDeck } from '../../services/deckService';
 
 const DeckList = ({ onDeckSelected }) => {
   const [decks, setDecks] = useState([]);
 
   useEffect(() => {
     // Fetch all decks
-    fetchDecks()
+    fetchDecks().then(setDecks).catch(console.error);
   }, []);
 
-  const fetchDecks = () => {
-    axios.get('/api/decks/')
-      .then(response => {
-            const decksWithFlags = response.data.value.map(deck => (
-              {
-                ...deck,
-                isDraft: false,
-                isEditing: false
-              }
-            ))
-            setDecks(decksWithFlags)
-      })
-      .catch(error => console.error("There was an error fetching the decks:", error));
-  }
 
-  const handleDeckDeleted= (deleteDeck) => {
-    axios.delete(`/api/decks/${deleteDeck.id}`
-    ).then(
-      setDecks((prevDecks) => prevDecks.filter(deck => deck.id !== deleteDeck.id))
-    ).catch(error => console.error("There was an error deleting the deck:", error));
-  }
+  const handleSaveDeck = async (deck) => {
+    if (deck.isDraft) {
+        try {
+            const addedDeck = await saveNewDeck(deck);
+            setDecks(cur => {
+                return [
+                    addedDeck, 
+                    ...cur.filter(f => f.id !== deck.id)
+                ];
+            });
+            // handleToggleEdit(addedDeck)
+        } catch (error) {
+            console.error("Error adding new deck:", error);
+        }
+    } else {
+        try {
+            const updatedDeck = await saveEditedDeck(deck);
+            setDecks(decks.map(f => f.id === updatedDeck.id ? updatedDeck : f));
+            // handleToggleEdit(updatedDeck)
+        } catch (error) {
+            console.error("Error saving flashcard:", error);
+        }
+    }
+}
 
-  const handleAddDeckDraft = () => {
-    setDecks(prevDecks => {
-        return [...prevDecks, {
-            id: -Date.now(),
-            name: "",  
-            isDraft: true,
-            isEditing: true
-        }]
-    })
+const handleDeleteDeck = async (deck) => {
+  if (deck.isDraft) {
+      setDecks(decks.filter(f => f.id !== deck.id))
+  } else {
+      try {
+          await deleteDeck(deck.id);
+          setDecks(decks.filter(f => f.id !== deck.id));
+      } catch (error) {
+          console.error("Error deleting deck:", error);
+      }
   }
+};
 
-  const handleToggleDeckEdit = (deck) => {
-    setDecks(prevDecks => {
-        return prevDecks.map(d => {
-            if (d.id === deck.id) {
-                return {
-                    ...d,
-                    isEditing: !d.isEditing
-                }
-            }
-            return d
-        })
-    })
+const handleCancelDeck = (deck) => {
+  if (deck.isDraft) {
+      setDecks(decks.filter(f => f.id !== deck.id))
+  } else {
+      handleToggleEdit(deck)
   }
+}
+
+const handleToggleEdit = (deck) => {
+  setDecks(cur => cur.map(f => f.id === deck.id ? {...f, isEditing: !f.isEditing} : f)) 
+}
+
+const handleAddDeck = () => {
+  setDecks(current => [...current, { id: -Date.now(), name: "", isDraft: true, isEditing: true }]);
+};
+  
 
   return (
     <div className='deck-list'>
-      <h2>Decks</h2>
-      {decks.map(deck => {
-        return deck.isDraft ? (
-          <div></div>
-        ) :
-        deck.isEditing ? (
-          <DeckEditor
-            key={deck.id} 
-            deck={deck} 
-            onDeckDeleted={handleDeckDeleted} 
+      <h1>Decks</h1>
+      {decks.map(deck => (
+        <Deck 
+            key={deck.id}
+            deck={deck}
+            onSaveDeck={handleSaveDeck}
+            onDeleteDeck={handleDeleteDeck}
+            onCancelDeck={handleCancelDeck}
+            onToggleEdit={handleToggleEdit}
             onDeckSelected={onDeckSelected}
-            onToggleDeckEdit={handleToggleDeckEdit}
-          />
-        ) : (
-          <DeckReader 
-            key={deck.id} 
-            deck={deck} 
-            onDeckDeleted={handleDeckDeleted} 
-            onDeckSelected={onDeckSelected}
-            onToggleDeckEdit={handleToggleDeckEdit}
-          />
-        )
-      }
-        )}
-      {/* {<CreateDeck onDeckCreated={handleDeckCreated} />} */}
-      <div className='add-icon' onClick={handleAddDeckDraft}>+</div>
+        />
+      ))}
+      <div className='add-icon' onClick={handleAddDeck}>+</div>
     </div>
   
 );
@@ -92,79 +90,6 @@ const DeckList = ({ onDeckSelected }) => {
 };
 
 
-const DeckReader = ({ deck, onDeckSelected, onDeckDeleted, onToggleDeckEdit }) => {
 
-  // const deleteDeck = (e) => {
-  //   e.stopPropagation(); // Prevents the click event from bubbling up the DOM tree to the parent element
-  //   axios
-  //     .delete(`/api/decks/${deck.id}`)
-  //     .then(() => {
-  //       onDeckDeleted(deck.id)
-  //     })
-  //     .catch(error => console.error("There was an error deleting the deck:", error));
-  // }
-
-  const handleDeckDeleted = (e, deck) => {
-    e.stopPropagation();
-    onDeckDeleted(deck);
-  }
-
-  const handleToggleDeckEdit = (e, deck) => {
-    e.stopPropagation();
-    onToggleDeckEdit(deck);
-  }
-
-  return (
-    <div className="deck"  onClick={!deck.isEditing ? (() => onDeckSelected(deck)) : null } >
-      <div className="deck-name">
-        <h3>{deck.name}</h3>
-        {/* Display flashcards here */}
-        {/* Add button or form to add new flashcard */}
-        <div className="icons">
-          <span className="edit-icon" onClick={(e) => handleToggleDeckEdit(e, deck) }>✎</span>
-          <span className="delete-icon" onClick={(e) => handleDeckDeleted(e, deck) }>✖</span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const DeckEditor = ({ deck, onDeckSelected, onDeckDeleted, onToggleDeckEdit }) => {
-  const [deckName, setDeckName] = useState(deck?.name ?? '');
-
-  // const deleteDeck = (e) => {
-  //   e.stopPropagation(); // Prevents the click event from bubbling up the DOM tree to the parent element
-  //   axios
-  //     .delete(`/api/decks/${deck.id}`)
-  //     .then(() => {
-  //       onDeckDeleted(deck.id)
-  //     })
-  //     .catch(error => console.error("There was an error deleting the deck:", error));
-  // }
-
-  const handleDeckDeleted = (e, deck) => {
-    e.stopPropagation();
-    onDeckDeleted(deck);
-  }
-
-  const handleToggleDeckEdit = (e, deck) => {
-    e.stopPropagation();
-    onToggleDeckEdit(deck);
-  }
-
-  return (
-    <div className="deck"  onClick={!deck.isEditing ? (() => onDeckSelected(deck)) : null } >
-      <div className="deck-name">
-        <h3>{deck.name}</h3>
-        {/* Display flashcards here */}
-        {/* Add button or form to add new flashcard */}
-        <div className="icons">
-          <span className="edit-icon" onClick={(e) => handleToggleDeckEdit(e, deck) }>✎</span>
-          <span className="delete-icon" onClick={(e) => handleDeckDeleted(e, deck) }>✖</span>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default DeckList;

@@ -19,6 +19,16 @@ def insert_deck_resource(session:Session, data:DeckModel) -> DeckModel:
     session.flush()
     return data
 
+def update_deck(session:Session, deck_id:int, deck_data:dict ) -> DeckModel:
+    existing_deck = session.query(DeckModel).filter_by(id=deck_id).first()
+    if not existing_deck:
+        raise ResourceNotFound(f"Deck resource with id of {deck_id} is not found.")
+    for key, value in deck_data.items():
+        setattr(existing_deck, key, value)
+    
+    session.flush()
+    return existing_deck
+
 def delete_deck_resource(session:Session, deck_id:int):
     resp_deck_resource = session.query(DeckModel).filter_by(id=deck_id).first()
     if resp_deck_resource:
