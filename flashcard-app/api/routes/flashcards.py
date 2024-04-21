@@ -85,6 +85,15 @@ def delete_flashcard(deck_id:int, flashcard_id:int):
 
     return response_with(SUCCESS_204)
 
+# @flashcard_bp.route("/<flashcard_id>/move", methods=["POST"])
+# def move_flashcard(deck_id:int, flashcard_id:int) :
+#     session = g.db_session
+
+#     data = request.json
+#     target_position = request.json.get('target_position')
+#     try:
+#         new_position = calculate_new_position
+
 
 # @flashcard_bp.route("/<flashcard_id>/generate-answer", methods=["POST"])
 # def generate_answer(deck_id:int, flashcard_id:int):
