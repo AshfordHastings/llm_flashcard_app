@@ -1,7 +1,5 @@
 ## Task Ordering
-- Refactor Front End 
-- Fix Deck Management
-- Fix Edit Button displays
+- Dockerize Backend
 
 
 ## Front End Updates

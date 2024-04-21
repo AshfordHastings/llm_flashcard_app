@@ -12,6 +12,33 @@ services:
       - ./postgres-init:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
+    networks:
+      - flashcard_network
+  flashcard_app:
+    build: ./flashcard-app
+    container_name: flashcard_app
+    env_file:
+      - ./.env
+    ports:
+      - 5001:5000
+    networks:
+      - flashcard_network
+    depends_on:
+      - fc_db
+  frontend:
+    build: ./flashcard-frontend
+    container_name: frontend
+    env_file: 
+      - ./flashcard-frontend/.env.dev
+    ports:
+      - 3000:80    
+    depends_on:
+      - flashcard_app
+    networks:
+      - flashcard_network
+networks:
+  flashcard_network:
+    driver: bridge
 # volumes:
 #   pgdata:
 
