@@ -14,8 +14,9 @@
 - Add Markdown rendering for flashcard questions
 
 ## Deployment 
-- Dockerize Back End
-- Dockerize Front End
+- Dockerize Back End X
+- Dockerize Front End X
+- 
 
 ## Backend
 - Add Tags for Flashcards

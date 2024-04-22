@@ -5,11 +5,6 @@ from sqlalchemy import String, Integer, Column, ForeignKey, Table, Float, DateTi
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
-
-
-from domain.flashcard_manager import Flashcard, Deck
-
-
 class Base(DeclarativeBase):
     pass
 
@@ -24,12 +19,6 @@ class FlashcardModel(Base):
 
     deck: Mapped['DeckModel'] = relationship(back_populates="flashcards")
 
-    def convert_to_domain(self):
-        return Flashcard(
-            question=self.question,
-            answer=self.answer
-        )
-
 class DeckModel(Base):
     __tablename__ = "decks"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -38,13 +27,6 @@ class DeckModel(Base):
 
     flashcards:Mapped[List['FlashcardModel']] = relationship(back_populates="deck", cascade="all, delete-orphan")
 
-    def convert_to_domain(self):
-        return Deck(
-            name=self.name,
-            summary=self.summary,
-            flashcards=[flashcard.convert_to_domain() for flashcard in self.flashcards]
-        )
-    
 # class FlashcardOrderModel(Base):
 #     __tablename__ = "flashcard_orders"
 #     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

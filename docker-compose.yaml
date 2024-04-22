@@ -15,7 +15,7 @@ services:
     networks:
       - flashcard_network
   flashcard_app:
-    build: ./flashcard-app
+    build: ./backend
     container_name: flashcard_app
     env_file:
       - ./.env
@@ -26,7 +26,7 @@ services:
     depends_on:
       - fc_db
   frontend:
-    build: ./flashcard-frontend
+    build: ./frontend
     container_name: frontend
     env_file: 
       - ./flashcard-frontend/.env.dev
