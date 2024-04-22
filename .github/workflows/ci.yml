@@ -42,7 +42,7 @@ jobs:
           with:
             context: ./backend
             push: true
-            tags: ghcr.io/ashfordhastings/llm_flashcard_app:latest
+            tags: ghcr.io/ashfordhastings/backend:latest
 
         - name: Output image digest
           run: echo "The image digest is ${{ steps.docker_build.outputs.digest }}"
