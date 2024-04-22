@@ -17,7 +17,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
         - name: Checkout Code
-          uses: actions/checkout@v4
+          uses: actions/checkout@v4x
 
         - name: Login to GitHub Container Registry
           uses: docker/login-action@v3
@@ -42,7 +42,7 @@ jobs:
           with:
             context: ./backend
             push: true
-            tags: ashfordhastings/backend:latest
+            tags: ashfordhastings/llm_flashcard_app:latest
 
         - name: Output image digest
           run: echo "The image digest is ${{ steps.docker_build.outputs.digest }}"
