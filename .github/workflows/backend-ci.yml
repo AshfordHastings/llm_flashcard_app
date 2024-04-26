@@ -1,7 +1,6 @@
 name: CI to Azure Container Registry
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
