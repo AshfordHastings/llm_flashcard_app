@@ -1,0 +1,3 @@
+- ACI does not support integration with Azure Load Balancer backend pools - and requires management of its own networking. 
+- ACI needs a delegation to assign IP addresses, configure routing within the VNet, manage network interfaces, only on ACIs using secure, non-public subnets. This is because if a public IP is assigned, it isn't participating the internet vnet's network management that has been necessetated by having a private communication channel. With a public IP, the networking is handled by Azure. 
+- Azure Container Instances does NOT support creating a public subnet, adding the ACI to it, giving the ACI a public IP on that Vnet. 
