@@ -7,7 +7,6 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.language_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
-from domain.flashcard_manager import Flashcard, Deck
 from .prompts import get_prompt, get_format_instructions
 
 
