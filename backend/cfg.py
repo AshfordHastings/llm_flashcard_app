@@ -10,6 +10,6 @@ class TestingConfig(Config):
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    DATABASE_URI = os.get_env('DATABASE_URI', 'postgresql://postgres:password@fc_db:5432/flashcard_db')
+    DATABASE_URI = os.getenv('DATABASE_URI', 'postgresql://postgres:password@db:5432/flashcard_db')
 
     

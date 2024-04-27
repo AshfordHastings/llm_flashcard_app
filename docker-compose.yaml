@@ -1,8 +1,8 @@
 version: '3'
 services:
-  fc_db: 
+  db: 
     image: 'postgres'
-    container_name: fc_db
+    container_name: db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -14,9 +14,9 @@ services:
       - 5432:5432
     networks:
       - flashcard_network
-  flashcard_app:
+  backend:
     build: ./backend
-    container_name: flashcard_app
+    container_name: backend
     env_file:
       - ./.env
     ports:
@@ -24,16 +24,16 @@ services:
     networks:
       - flashcard_network
     depends_on:
-      - fc_db
+      - db
   frontend:
     build: ./frontend
     container_name: frontend
     env_file: 
-      - ./flashcard-frontend/.env.dev
+      - ./frontend/.env.dev
     ports:
       - 3000:80    
     depends_on:
-      - flashcard_app
+      - backend
     networks:
       - flashcard_network
 networks:
