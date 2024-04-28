@@ -3,7 +3,7 @@ import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';;
+import App from './App';
 
 axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5001/';
 
