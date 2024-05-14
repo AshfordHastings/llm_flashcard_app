@@ -26,9 +26,10 @@ spec:
 apiVersion: v1 
 kind: Service
 metadata:
-  name: frontend-ingress
+  name: frontend-service
 spec:
-  type: NodePort 
+  type: NodePort
+  #type: ClusterIP # Switched from NodePort - because creating an Ingress, don't need to expose this 
   selector: 
     app: frontend
   ports: 

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Fetch all decks
 export const fetchDecks = async () => {
-    const response = await axios.get(`/api/decks`);
+    const response = await axios.get(`/api/decks/`);
     return response.data.value.map(deck => ({
         ...deck,
         isDraft: false,
