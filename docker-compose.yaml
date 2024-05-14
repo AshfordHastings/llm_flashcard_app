@@ -14,7 +14,7 @@ services:
       - 5432:5432
     networks:
       - flashcard_network
-  backend:
+  backend-service:
     build: ./backend
     container_name: backend
     env_file:
@@ -29,11 +29,11 @@ services:
     build: ./frontend
     container_name: frontend
     env_file: 
-      - ./frontend/.env.dev
+      - .frontend.env
     ports:
       - 3000:80    
     depends_on:
-      - backend
+      - backend-service
     networks:
       - flashcard_network
 networks:

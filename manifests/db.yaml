@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: db-init-scripts
+data:
+  01_init.sql: |-
+    -- Create the "decks" table
+    CREATE TABLE IF NOT EXISTS decks (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR NOT NULL,
+        summary TEXT
+    );
+
+    -- Create the "flashcards" table
+    CREATE TABLE IF NOT EXISTS flashcards (
+        id SERIAL PRIMARY KEY,
+        question TEXT,
+        answer TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        deck_id INTEGER NOT NULL,
+        FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE
+    );
+
+    -- CREATE TABLE IF NOT EXISTS flashcard_orders (
+    --     id INT AUTO_INCREMENT PRIMARY KEY,
+    --     flashcard_id INT,
+    --     deck_id INT,
+    --     position FLOAT,
+    --     FOREIGN KEY (flashcard_id) REFERENCES flashcards(id),
+    --     FOREIGN KEY (deck_id) REFERENCES Dedeckscks(id)
+    -- );
+
+    -- psql -h localhost -p 5432 -U postgres -d flashcard_db
+    -- \dt - list tables
+    -- \d decks - describe decks table
+    -- SELECT * FROM decks;
+    -- \dn - list schemas
+  02_insert_deck_data.sql: INSERT INTO decks (name, summary) VALUES ('Deck 1', 'Flashcards
+    to Learn About Kubernetes');
+  03_insert_flashcard_data.sql: |-
+    INSERT INTO flashcards (deck_id, question, answer) VALUES ((SELECT id from decks WHERE name='Deck 1'), 'What is the role of Ingress controller in Kubernetes?', 'In Kubernetes, the Ingress controller is responsible for fulfilling the Ingress, usually with a load balancer, though it can also configure your edge router or additional frontends to help handle the traffic.');
+    INSERT INTO flashcards (deck_id, question, answer) VALUES ((SELECT id from decks WHERE name='Deck 1'), 'How does Ingress control external access to services in a Kubernetes cluster?', 'Ingress in Kubernetes manages external access to services in a cluster by routing external HTTP or HTTPS requests to internal services based on defined rules.');
+    INSERT INTO flashcards (deck_id, question, answer) VALUES ((SELECT id from decks WHERE name='Deck 1'), 'What are the differences between Ingress and Service in Kubernetes?', 'Ingress is a collection of routing rules that govern how external users access services running in a Kubernetes cluster. Service, on the other hand, is an abstraction that defines a logical set of pods and a policy to access them.');
+    INSERT INTO flashcards (deck_id, question, answer) VALUES ((SELECT id from decks WHERE name='Deck 1'), 'What are the benefits of using Service Discovery in Kubernetes?', 'Service Discovery in Kubernetes provides a flexible and scalable way for services to find and communicate with each other. It allows services to be loosely coupled, enhances service availability, and enables load balancing.');
+    INSERT INTO flashcards (deck_id, question, answer) VALUES ((SELECT id from decks WHERE name='Deck 1'), 'Why is it necessary to use Ingress in a Kubernetes cluster?', 'Ingress is necessary in a Kubernetes cluster to efficiently manage access to services from outside the cluster. It provides load balancing, SSL termination, and name-based virtual hosting.');
+
+# kubectl create configmap db-init-scripts --from-file=./postgres-init/ -o=yaml --dry-run=client > manifests/db.yaml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres  # Use the version of PostgreSQL you need
+        env:
+          - name: POSTGRES_DB
+            value: flashcard_db
+          - name: POSTGRES_USER
+            value: postgres
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: password
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-storage
+        - mountPath: /docker-entrypoint-initdb.d
+          name: init-scripts
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+      - name: init-scripts
+        configMap:
+          name: db-init-scripts
+        

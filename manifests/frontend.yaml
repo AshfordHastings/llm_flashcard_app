@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-dev
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  replicas: 1
+  template:
+    metadata:
+      name: app
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: "ghcr.io/ashfordhastings/frontend:latest"
+          ports: 
+          - containerPort: 80
+            protocol: TCP
+          env:
+          - name: REACT_APP_BACKEND_URL
+            value: "http://backend-service:80/"
+---
+apiVersion: v1 
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  type: NodePort
+  #type: ClusterIP # Switched from NodePort - because creating an Ingress, don't need to expose this 
+  selector: 
+    app: frontend
+  ports: 
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+# minikube service frontend-ingress --url
