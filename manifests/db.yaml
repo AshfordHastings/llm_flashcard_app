@@ -101,4 +101,16 @@ spec:
       - name: init-scripts
         configMap:
           name: db-init-scripts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  type: ClusterIP
+  selector:
+    app: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
         
