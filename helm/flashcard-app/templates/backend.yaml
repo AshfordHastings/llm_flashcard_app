@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-dev
-  namespace: flashcard-services
+  name: {{ .Release.Name }}-backend-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
@@ -16,11 +16,10 @@ spec:
         app.kubernetes.io/name: backend
         app.kubernetes.io/part-of: flashcard-app
         app.kubernetes.io/version: 0.0.1
-        # app.kubernetes.io/managed-by: Helm
     spec:
       containers:
         - name: backend
-          image: "ghcr.io/ashfordhastings/backend:latest"
+          image: "{{ .Values.services.registry }}/{{ .Values.services.backend.image }}:{{ .Values.services.backend.tag }}"
           imagePullPolicy: IfNotPresent
           ports: 
           - containerPort: 5000
@@ -46,23 +45,16 @@ spec:
             httpGet:
               path: /api/health
               port: 5000
-              httpHeaders:
-              - name: my-header
-                value: hello
             initialDelaySeconds: 15
             periodSeconds: 15
             failureThreshold: 3
             timeoutSeconds: 3
-      # nodeSelector:
-      #   kubernetes.io/os: linux #Optional
-      #   app: flashcard-app
-
 ---
 apiVersion: v1 
 kind: Service
 metadata:
   name: backend-service
-  namespace: flashcard-services
+  namespace: {{ .Release.Namespace }}
 spec:
   type: ClusterIP 
   selector: 

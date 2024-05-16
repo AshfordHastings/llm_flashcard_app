@@ -1,0 +1,8 @@
+apiVersion: v1 
+kind: Namespace 
+metadata: 
+  name: flashcard-services
+# ---
+# apiVersion: v1
+# kind: LimitRange
+# metadata: 
