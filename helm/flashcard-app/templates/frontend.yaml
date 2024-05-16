@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-dev
-  namespace: flashcard-services
+  name: {{ .Release.Name }}-frontend-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
@@ -19,22 +19,19 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: "ghcr.io/ashfordhastings/frontend:latest"
-          imagePullPolicy: Always
+          image: "{{ .Values.services.registry }}/{{ .Values.services.frontend.image }}:{{ .Values.services.frontend.tag }}"
           ports: 
           - containerPort: 80
             protocol: TCP
           env:
           - name: REACT_APP_BACKEND_URL
             value: "http://backend-service:80/"
-      # nodeSelector:
-      #   app: flashcard-app
 ---
 apiVersion: v1 
 kind: Service
 metadata:
   name: frontend-service
-  namespace: flashcard-services
+  namespace: {{ .Release.Namespace }}
 spec:
   type: NodePort
   #type: ClusterIP # Switched from NodePort - because creating an Ingress, don't need to expose this 

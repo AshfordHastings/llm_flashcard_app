@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: db-init-scripts
-  namespace: flashcard-services
+  namespace: {{ .Release.Namespace }}
 data:
   01_init.sql: |-
     -- Create the "decks" table
@@ -53,7 +53,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
-  namespace: flashcard-services
+  namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
     - ReadWriteOnce
@@ -65,8 +65,8 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres-deployment
-  namespace: flashcard-services
+  name: {{ .Release.Name }}-postgres-deployment
+  namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
@@ -76,6 +76,9 @@ spec:
     metadata:
       labels:
         app: postgres
+        app.kubernetes.io/name: postgres
+        app.kubernetes.io/part-of: flashcard-app
+        app.kubernetes.io/version: 0.0.1
     spec:
       containers:
       - name: postgres
@@ -104,14 +107,12 @@ spec:
       - name: init-scripts
         configMap:
           name: db-init-scripts
-      # nodeSelector:
-      #   app: flashcard-app
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: db
-  namespace: flashcard-services
+  namespace: {{ .Release.Namespace }}
 spec:
   type: ClusterIP
   selector:
