@@ -7,6 +7,7 @@ import App from './App';
 
 // axios.defaults.baseURL = process.env.REACT_APP_BACKEND_URL;
 // axios.defaults.baseURL = "http://frontend"
+axios.defaults.baseURL = "http://localhost:5001"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

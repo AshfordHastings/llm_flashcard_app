@@ -8,6 +8,7 @@ from api.app import create_app
 parser = argparse.ArgumentParser(description="Run the backend Flashcard application.")
 
 parser.add_argument("--gunicorn", '-g', action="store_true", help="Option to run application using Gunicorn.")
+parser.add_argument("--env", '-e', type=str, help="Option to specify environment.")
 
 args = parser.parse_args()
 
@@ -39,8 +40,13 @@ def run_flask():
     StandaloneGunicornApplication(app, options).run()
 
 if __name__ == "__main__":
+    if args.env:
+        config_name = args.env
+    else:
+        config_name = "development"
+
     if args.gunicorn:
         run_flask()
     else:
-        app = create_app(config_name="development")
+        app = create_app(config_name)
         app.run(port=5001, debug=True)

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import './DeckPage.css';
 
+import {DndContext} from '@dnd-kit/core';
+import {Draggable} from './Draggable';
+import {Droppable} from './Droppable';
+
 import Flashcard from '../../components/Flashcard/Flashcard';
 import SidePanel from '../../components/SidePanel/SidePanel';
 import DeckOptions from '../../components/DeckOptions/DeckOptions';
@@ -148,3 +152,5 @@ const DeckPage = ({ deck, onBack }) => {
 
 
 export default DeckPage;
+
+// https://codesandbox.io/p/sandbox/react-new?file=%2Fpackage.json%3A10%2C30
