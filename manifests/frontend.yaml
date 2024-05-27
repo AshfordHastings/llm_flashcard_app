@@ -36,12 +36,13 @@ metadata:
   name: frontend-service
   namespace: flashcard-services
 spec:
-  type: NodePort
-  #type: ClusterIP # Switched from NodePort - because creating an Ingress, don't need to expose this 
+  #type: NodePort
+  type: ClusterIP # Switched from NodePort - because creating an Ingress, don't need to expose this 
   selector: 
     app: frontend
   ports: 
-    - port: 80
-      targetPort: 80
-      protocol: TCP
+    #- containerport: 80
+      - port: 80
+        targetPort: 80
+        protocol: TCP
 # minikube service frontend-ingress --url

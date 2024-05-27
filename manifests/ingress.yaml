@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: flashcard-ingress
+  namespace: flashcard-services
+  annotations:
+    kubernetes.io/ingress.class: public-nginx
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    # nginx.ingress.kubernetes.io/use-regex: "true"
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  tls:
+    - hosts:
+        - flashcard.app
+      secretName: flashcard-app-tls
+      # https://projectnessie.org/guides/tls/#creating-certificates 
+  rules:
+  - host: flashcard.app
+    http: 
+      paths:
+        - path: /
+          pathType: Prefix
+          backend: 
+            service:
+              name: frontend-service
+              port:
+                number: 80
+        - path: /api
+          pathType: Prefix
+          backend:
+            service:
+              name: backend-service
+              # namespace: flashcard-services
+              port: 
+                number: 5000
