@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import './DeckPage.css';
 
-import {DndContext} from '@dnd-kit/core';
-import {Draggable} from './Draggable';
-import {Droppable} from './Droppable';
+// import {DndContext} from '@dnd-kit/core';
+// import {Draggable} from './Draggable';
+// import {Droppable} from './Droppable';
 
 import Flashcard from '../../components/Flashcard/Flashcard';
 import SidePanel from '../../components/SidePanel/SidePanel';

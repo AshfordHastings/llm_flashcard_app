@@ -11,8 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the entire project to the working directory
-COPY public/ public/
-COPY src/ src/
+COPY . .
 
 # Build the React app
 RUN npm run build
@@ -24,7 +23,7 @@ FROM nginx:1.21-alpine
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
-COPY --from=builder /app/build .
+COPY --from=builder /app/dist .
 COPY nginx.conf /etc/nginx/nginx.conf
 
 ENTRYPOINT ["nginx", "-g"]

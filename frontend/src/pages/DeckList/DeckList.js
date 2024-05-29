@@ -1,8 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import {DndContext} from '@dnd-kit/core';
-import {Draggable} from './Draggable';
-import {Droppable} from './Droppable';
 
 import './DeckList.css';
 import Deck from '../../components/Deck/Deck';
